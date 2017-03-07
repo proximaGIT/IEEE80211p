@@ -81,6 +81,10 @@ end
 %------------------------------------------------------------------------------
 % Procedure
 %------------------------------------------------------------------------------
+
+% Random Transport Stream Generator
+ieee80211p_tx_datagen_wr(IEEE80211P, FidLogFile);
+
 % fprintf(FidLogFile,'End of Tx IEEE 802.11p \n');
 
 end

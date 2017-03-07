@@ -1,4 +1,4 @@
-function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
+function [ DataOut ] = ieee80211p_tx_bldatagen( IEEE80211P, FidLogFile )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
@@ -72,62 +72,16 @@ function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
 %------------------------------------------------------------------------------
 switch(nargin)
   case 1,
-   error('Test path is required.');
+    FidLogFile = 1; % Standard output
   case 2,
   otherwise,
-    error('ieee80211p_cfg_blcfg SYNTAX');
+    error('ieee80211p_tx_bldatagen SYNTAX');
 end
 
 %------------------------------------------------------------------------------
-% IEEE80211P configuration
+% Parameters Definition
 %------------------------------------------------------------------------------
-IEEE80211P.STRICT                       =   1;       % Strict IEEE80211P syntax checking enabled - Not Implemented Yet
-
-IEEE80211P.SNR                          =   30; %To be decided to retain
-IEEE80211P.IFFT_FACTOR                  =   ((1/52^.5) * 64); %To be decided to retain
-IEEE80211P.SNR_FACTOR                   =   (10^(IEEE80211P.SNR/10.0))^.5; %To be decided to retain
-
-IEEE80211P.NO_OF_SYMBOLS                =   15; %symbol
-IEEE80211P.VALID_SYMBOLS                =   14; %To be decided to retain
-IEEE80211P.VALID_NO_SUBCARRIERS         =   48; %To be decided to retain
-
-IEEE80211P.STREAM_PAD                   =   10000; %To be decided to retain
-
-IEEE80211P.SNR_RANGE                    =   30; %To be decided to retain
-
-IEEE80211P.FLAG_RUN_OLD_METRIC          =   1; %To be decided to retain
-
-%------------------------------------------------------------------------------
-% I/O Configuration
-%------------------------------------------------------------------------------
-IEEE80211P.SIM.SIMDIR                   =   Test_Path; % Saving directory
-IEEE80211P.SIM.VERSION                  =   '2012'; %Just A version number, if changed in future
-
-%------------------------------------------------------------------------------
-% Overall parameters
-%------------------------------------------------------------------------------
-IEEE80211P.GI_FRACTION                  =   0.25; %25% guard interval
-
-%------------------------------------------------------------------------------
-% Transmitter parameters
-%------------------------------------------------------------------------------
-% Enables
-IEEE80211P.TX.ENABLE                    =   1; % TX enable
-IEEE80211P.TX.DATAGEN.ENABLE            =   1; % Enable/Disable data generation
-
-% Block type
-IEEE80211P.TX.TYPE                      =   'IEEE80211P_BL';   % Transmiter type
-IEEE80211P.TX.DATAGEN.TYPE              =   'IEEE80211P_BL';   % Transport stream generator type
-
-% I/O Filenames
-IEEE80211P.TX.DATAGEN_FDO               =   'datagen_tx_do';     % O: random data generator
-
-IEEE80211P.TX.DATAGEN.SEED              =   0; % Random number generator seed
-IEEE80211P.TX.DATAGEN.NUM_FRAME         =   100; %Number of Frames To be generated
-IEEE80211P.TX.DATAGEN.LEN_FRAME         =   64*16; %Length of each frame
-
-
-
+SEED       = IEEE80211P.TX.DATAGEN.SEED;     % Random seed
 
 end
 

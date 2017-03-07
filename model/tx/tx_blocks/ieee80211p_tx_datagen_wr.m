@@ -1,4 +1,4 @@
-function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
+function [ ] = ieee80211p_tx_datagen_wr( IEEE80211P, FidLogFile )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
@@ -72,62 +72,52 @@ function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
 %------------------------------------------------------------------------------
 switch(nargin)
   case 1,
-   error('Test path is required.');
+    FidLogFile = 1; % Standard output
   case 2,
   otherwise,
-    error('ieee80211p_cfg_blcfg SYNTAX');
+    error('ieee80211p_tx_datagen_wr SYNTAX');
 end
 
 %------------------------------------------------------------------------------
-% IEEE80211P configuration
+% Parameters Definition
 %------------------------------------------------------------------------------
-IEEE80211P.STRICT                       =   1;       % Strict IEEE80211P syntax checking enabled - Not Implemented Yet
-
-IEEE80211P.SNR                          =   30; %To be decided to retain
-IEEE80211P.IFFT_FACTOR                  =   ((1/52^.5) * 64); %To be decided to retain
-IEEE80211P.SNR_FACTOR                   =   (10^(IEEE80211P.SNR/10.0))^.5; %To be decided to retain
-
-IEEE80211P.NO_OF_SYMBOLS                =   15; %symbol
-IEEE80211P.VALID_SYMBOLS                =   14; %To be decided to retain
-IEEE80211P.VALID_NO_SUBCARRIERS         =   48; %To be decided to retain
-
-IEEE80211P.STREAM_PAD                   =   10000; %To be decided to retain
-
-IEEE80211P.SNR_RANGE                    =   30; %To be decided to retain
-
-IEEE80211P.FLAG_RUN_OLD_METRIC          =   1; %To be decided to retain
+ENABLED  = IEEE80211P.TX.DATAGEN.ENABLE;  % Enable
+DO_FNAME = IEEE80211P.TX.DATAGEN_FDO;     % Output file name
+TYPE     = IEEE80211P.TX.DATAGEN.TYPE;    % Block type
+SIM_DIR  = IEEE80211P.SIM.SIMDIR;         % Simulation directory 
 
 %------------------------------------------------------------------------------
-% I/O Configuration
+% Procedure
 %------------------------------------------------------------------------------
-IEEE80211P.SIM.SIMDIR                   =   Test_Path; % Saving directory
-IEEE80211P.SIM.VERSION                  =   '2012'; %Just A version number, if changed in future
+global DATA;
+
+if ENABLED
+  fprintf(FidLogFile,'\tData generator: (%s)\n', TYPE);
+
+  switch TYPE
+    case 'IEEE80211P_BL'
+      data = ieee80211p_tx_bldatagen(IEEE80211P, FidLogFile);         
+    otherwise     
+      error('Unknown data generator type %s', TYPE);
+  end
+
+else
+  fprintf(FidLogFile,'\tData generator: DISABLED\n');
+end
 
 %------------------------------------------------------------------------------
-% Overall parameters
+% Output saving and formatting
 %------------------------------------------------------------------------------
-IEEE80211P.GI_FRACTION                  =   0.25; %25% guard interval
-
-%------------------------------------------------------------------------------
-% Transmitter parameters
-%------------------------------------------------------------------------------
-% Enables
-IEEE80211P.TX.ENABLE                    =   1; % TX enable
-IEEE80211P.TX.DATAGEN.ENABLE            =   1; % Enable/Disable data generation
-
-% Block type
-IEEE80211P.TX.TYPE                      =   'IEEE80211P_BL';   % Transmiter type
-IEEE80211P.TX.DATAGEN.TYPE              =   'IEEE80211P_BL';   % Transport stream generator type
-
-% I/O Filenames
-IEEE80211P.TX.DATAGEN_FDO               =   'datagen_tx_do';     % O: random data generator
-
-IEEE80211P.TX.DATAGEN.SEED              =   0; % Random number generator seed
-IEEE80211P.TX.DATAGEN.NUM_FRAME         =   100; %Number of Frames To be generated
-IEEE80211P.TX.DATAGEN.LEN_FRAME         =   64*16; %Length of each frame
-
-
-
+if ENABLED  
+  if strcmp(DO_FNAME, '')
+    DATA = data; 
+    fprintf(FidLogFile,'\t\tData stored in workspace\n');
+  else
+    save(strcat(SIM_DIR, filesep, DO_FNAME),'data')
+    fprintf(FidLogFile,'\t\tData saved in file: %s\n',...
+            DO_FNAME);
+  end
+end
 
 end
 

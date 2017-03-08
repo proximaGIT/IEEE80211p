@@ -1,4 +1,4 @@
-function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
+function [ ] = test_IEEE80211p_HelloWorld( Test_Path, Work_Path, Fid_Log, Fid_Rep, Commandline_Params )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
@@ -68,65 +68,33 @@ function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
 %******************************************************************************
 
 %------------------------------------------------------------------------------
-% Input arguments checking
+% Default Configuration
 %------------------------------------------------------------------------------
-switch(nargin)
-  case 1,
-   error('Test path is required.');
-  case 2,
-  otherwise,
-    error('ieee80211p_cfg_blcfg SYNTAX');
-end
+IEEE80211P.CFG_TYPE = 'IEEE80211P_HW';       % IEEE 802.11p Model - HelloWorld Messages
+IEEE80211P = ieee80211p_cfg_wr(IEEE80211P, Work_Path, Fid_Log); % Default configuration
+
+%Print CSP version
+fprintf(Fid_Log, 'Version: %s\n', IEEE80211P.SIM.VERSION);
 
 %------------------------------------------------------------------------------
-% IEEE80211P configuration
+% Get the standard parameters
 %------------------------------------------------------------------------------
-IEEE80211P.STRICT                       =   1;       % Strict IEEE80211P syntax checking enabled - Not Implemented Yet
+IEEE80211P.STD_TYPE='IEEE80211P_BL';
 
-IEEE80211P.SNR                          =   30; %To be decided to retain
-IEEE80211P.IFFT_FACTOR                  =   ((1/52^.5) * 64); %To be decided to retain
-IEEE80211P.SNR_FACTOR                   =   (10^(IEEE80211P.SNR/10.0))^.5; %To be decided to retain
+% STD configuration
+IEEE80211P.STANDARD = ieee80211p_std_config_wr(IEEE80211P);
 
-IEEE80211P.NO_OF_SYMBOLS                =   15; %symbol
-IEEE80211P.VALID_SYMBOLS                =   14; %To be decided to retain
-IEEE80211P.VALID_NO_SUBCARRIERS         =   48; %To be decided to retain
 
-IEEE80211P.STREAM_PAD                   =   10000; %To be decided to retain
-
-IEEE80211P.SNR_RANGE                    =   30; %To be decided to retain
-
-IEEE80211P.FLAG_RUN_OLD_METRIC          =   1; %To be decided to retain
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%------------------------------------------------------------------------------
+% Run IEEE 802.11p Tx-Rx
+%------------------------------------------------------------------------------
+result = ieee80211p_sys(IEEE80211P,Fid_Log);
 
 %------------------------------------------------------------------------------
-% I/O Configuration
+% Parse Result
 %------------------------------------------------------------------------------
-IEEE80211P.SIM.SIMDIR                   =   Test_Path; % Saving directory
-IEEE80211P.SIM.VERSION                  =   '2012'; %Just A version number, if changed in future
-
-%------------------------------------------------------------------------------
-% Overall parameters
-%------------------------------------------------------------------------------
-IEEE80211P.GI_FRACTION                  =   0.25; %25% guard interval
-
-%------------------------------------------------------------------------------
-% Transmitter parameters
-%------------------------------------------------------------------------------
-% Enables
-IEEE80211P.TX.ENABLE                    =   1; % TX enable
-IEEE80211P.TX.DATAGEN.ENABLE            =   1; % Enable/Disable data generation
-
-% Block type
-IEEE80211P.TX.TYPE                      =   'IEEE80211P_BL';   % Transmiter type
-IEEE80211P.TX.DATAGEN.TYPE              =   'IEEE80211P_BL';   % Transport stream generator type
-
-% I/O Filenames
-IEEE80211P.TX.DATAGEN_FDO               =   'datagen_tx_do';     % O: random data generator
-
-IEEE80211P.TX.DATAGEN.SEED              =   0; % Random number generator seed
-IEEE80211P.TX.DATAGEN.NUM_FRAMES        =   1; %Number of Frames To be generated
-IEEE80211P.TX.DATAGEN.FRAME_SIZE        =   100; %Length of each frame in bytes
-
-
+% parse_result(IEEE80211P,result,Fid_Rep)
 
 
 end

@@ -1,4 +1,4 @@
-function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
+function [ IEEE80211P ] = ieee80211p_cfg_blcfg_HW( IEEE80211P, Test_Path )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
@@ -117,15 +117,15 @@ IEEE80211P.TX.DATAGEN.ENABLE            =   1; % Enable/Disable data generation
 
 % Block type
 IEEE80211P.TX.TYPE                      =   'IEEE80211P_BL';   % Transmiter type
-IEEE80211P.TX.DATAGEN.TYPE              =   'IEEE80211P_BL';   % Transport stream generator type
+IEEE80211P.TX.DATAGEN.TYPE              =   'IEEE80211P_HW';   % HelloWorld Message generator
 
 % I/O Filenames
 IEEE80211P.TX.DATAGEN_FDO               =   'datagen_tx_do';     % O: random data generator
 
 IEEE80211P.TX.DATAGEN.SEED              =   0; % Random number generator seed
 IEEE80211P.TX.DATAGEN.NUM_FRAMES        =   1; %Number of Frames To be generated
-IEEE80211P.TX.DATAGEN.FRAME_SIZE        =   100; %Length of each frame in bytes
-
+IEEE80211P.TX.DATAGEN.MESSAGE           =   'HelloWorld';
+IEEE80211P.TX.DATAGEN.FRAME_SIZE        =   length(IEEE80211P.TX.DATAGEN.MESSAGE); %Length of each frame in bytes
 
 
 

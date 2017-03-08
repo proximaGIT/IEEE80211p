@@ -1,9 +1,9 @@
-function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
+function [ DataOut ] = ieee80211p_tx_bldatagen_HW( IEEE80211P, FidLogFile )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
-%* 
-%* 
+%*
+%*
 %* Permission is hereby granted, free of charge, to any person obtaining a copy
 %* of this software and associated documentation files (the "Software"), to deal
 %* in the Software without restriction, including without limitation the rights
@@ -21,15 +21,15 @@ function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
 %* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %* THE SOFTWARE.
-%* 
-%* This notice contains a licence of copyright only and does not grant 
-%* (implicitly or otherwise) any patent licence and no permission is given 
-%* under this notice with regards to any third party intellectual property 
-%* rights that might be used for the implementation of the Software.  
+%*
+%* This notice contains a licence of copyright only and does not grant
+%* (implicitly or otherwise) any patent licence and no permission is given
+%* under this notice with regards to any third party intellectual property
+%* rights that might be used for the implementation of the Software.
 %*
 %* Derived from:
 %* Copyright (c) 2011 AICIA, BBC, Pace, Panasonic, SIDSA
-%* 
+%*
 %* Permission is hereby granted, free of charge, to any person obtaining a copy
 %* of this software and associated documentation files (the "Software"), to deal
 %* in the Software without restriction, including without limitation the rights
@@ -47,86 +47,58 @@ function [ IEEE80211P ] = ieee80211p_cfg_blcfg( IEEE80211P, Test_Path )
 %* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %* THE SOFTWARE.
-%* 
-%* This notice contains a licence of copyright only and does not grant 
-%* (implicitly or otherwise) any patent licence and no permission is given 
-%* under this notice with regards to any third party intellectual property 
-%* rights that might be used for the implementation of the Software.  
+%*
+%* This notice contains a licence of copyright only and does not grant
+%* (implicitly or otherwise) any patent licence and no permission is given
+%* under this notice with regards to any third party intellectual property
+%* rights that might be used for the implementation of the Software.
 %*
 %******************************************************************************
 
 %******************************************************************************
-%* Project     : IEEE 802.11p Simulation Platform 
+%* Project     : IEEE 802.11p Simulation Platform
 %* Date        : $Date$
 %* Version     : $Revision$
 %* Author      : Praharsha Sirsi
-%* Description : 
-%*               
+%* Description :
 %*
-%*               
-%*               
+%*
+%*
+%*
 %******************************************************************************
 
 %------------------------------------------------------------------------------
 % Input arguments checking
 %------------------------------------------------------------------------------
 switch(nargin)
-  case 1,
-   error('Test path is required.');
-  case 2,
-  otherwise,
-    error('ieee80211p_cfg_blcfg SYNTAX');
+    case 1,
+        FidLogFile = 1; % Standard output
+    case 2,
+    otherwise,
+        error('ieee80211p_tx_bldatagen SYNTAX');
 end
 
 %------------------------------------------------------------------------------
-% IEEE80211P configuration
+% Parameters Definition
 %------------------------------------------------------------------------------
-IEEE80211P.STRICT                       =   1;       % Strict IEEE80211P syntax checking enabled - Not Implemented Yet
-
-IEEE80211P.SNR                          =   30; %To be decided to retain
-IEEE80211P.IFFT_FACTOR                  =   ((1/52^.5) * 64); %To be decided to retain
-IEEE80211P.SNR_FACTOR                   =   (10^(IEEE80211P.SNR/10.0))^.5; %To be decided to retain
-
-IEEE80211P.NO_OF_SYMBOLS                =   15; %symbol
-IEEE80211P.VALID_SYMBOLS                =   14; %To be decided to retain
-IEEE80211P.VALID_NO_SUBCARRIERS         =   48; %To be decided to retain
-
-IEEE80211P.STREAM_PAD                   =   10000; %To be decided to retain
-
-IEEE80211P.SNR_RANGE                    =   30; %To be decided to retain
-
-IEEE80211P.FLAG_RUN_OLD_METRIC          =   1; %To be decided to retain
+SEED       = IEEE80211P.TX.DATAGEN.SEED;     % Random seed
 
 %------------------------------------------------------------------------------
-% I/O Configuration
+% Procedure
 %------------------------------------------------------------------------------
-IEEE80211P.SIM.SIMDIR                   =   Test_Path; % Saving directory
-IEEE80211P.SIM.VERSION                  =   '2012'; %Just A version number, if changed in future
+NUM_FRAMES = IEEE80211P.TX.DATAGEN.NUM_FRAMES; %Number of frames to be generated
+MESSAGE = IEEE80211P.TX.DATAGEN.MESSAGE; %Get the message to be transmitted
+FRAME_SIZE = IEEE80211P.TX.DATAGEN.FRAME_SIZE; %Number of bytes per frame
 
-%------------------------------------------------------------------------------
-% Overall parameters
-%------------------------------------------------------------------------------
-IEEE80211P.GI_FRACTION                  =   0.25; %25% guard interval
+decimal_message = double(MESSAGE); %Convert the string to ASCII decimal values
 
-%------------------------------------------------------------------------------
-% Transmitter parameters
-%------------------------------------------------------------------------------
-% Enables
-IEEE80211P.TX.ENABLE                    =   1; % TX enable
-IEEE80211P.TX.DATAGEN.ENABLE            =   1; % Enable/Disable data generation
+numBytes = FRAME_SIZE*NUM_FRAMES; %Total Number of bytes to be generated
 
-% Block type
-IEEE80211P.TX.TYPE                      =   'IEEE80211P_BL';   % Transmiter type
-IEEE80211P.TX.DATAGEN.TYPE              =   'IEEE80211P_BL';   % Transport stream generator type
+data = repmat(decimal_message,1,NUM_FRAMES); %Repeat the message NUM_FRAMES times
 
-% I/O Filenames
-IEEE80211P.TX.DATAGEN_FDO               =   'datagen_tx_do';     % O: random data generator
+fprintf(FidLogFile,'\t\t%d Bytes generated\n', numBytes);
 
-IEEE80211P.TX.DATAGEN.SEED              =   0; % Random number generator seed
-IEEE80211P.TX.DATAGEN.NUM_FRAMES        =   1; %Number of Frames To be generated
-IEEE80211P.TX.DATAGEN.FRAME_SIZE        =   100; %Length of each frame in bytes
-
-
+DataOut = data;
 
 
 end

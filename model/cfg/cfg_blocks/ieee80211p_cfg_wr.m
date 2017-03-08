@@ -2,8 +2,8 @@ function [ IEEE80211P ] = ieee80211p_cfg_wr( IEEE80211P, Test_Path, Fid_Log_File
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
-%* 
-%* 
+%*
+%*
 %* Permission is hereby granted, free of charge, to any person obtaining a copy
 %* of this software and associated documentation files (the "Software"), to deal
 %* in the Software without restriction, including without limitation the rights
@@ -21,15 +21,15 @@ function [ IEEE80211P ] = ieee80211p_cfg_wr( IEEE80211P, Test_Path, Fid_Log_File
 %* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %* THE SOFTWARE.
-%* 
-%* This notice contains a licence of copyright only and does not grant 
-%* (implicitly or otherwise) any patent licence and no permission is given 
-%* under this notice with regards to any third party intellectual property 
-%* rights that might be used for the implementation of the Software.  
+%*
+%* This notice contains a licence of copyright only and does not grant
+%* (implicitly or otherwise) any patent licence and no permission is given
+%* under this notice with regards to any third party intellectual property
+%* rights that might be used for the implementation of the Software.
 %*
 %* Derived from:
 %* Copyright (c) 2011 AICIA, BBC, Pace, Panasonic, SIDSA
-%* 
+%*
 %* Permission is hereby granted, free of charge, to any person obtaining a copy
 %* of this software and associated documentation files (the "Software"), to deal
 %* in the Software without restriction, including without limitation the rights
@@ -47,37 +47,37 @@ function [ IEEE80211P ] = ieee80211p_cfg_wr( IEEE80211P, Test_Path, Fid_Log_File
 %* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %* THE SOFTWARE.
-%* 
-%* This notice contains a licence of copyright only and does not grant 
-%* (implicitly or otherwise) any patent licence and no permission is given 
-%* under this notice with regards to any third party intellectual property 
-%* rights that might be used for the implementation of the Software.  
+%*
+%* This notice contains a licence of copyright only and does not grant
+%* (implicitly or otherwise) any patent licence and no permission is given
+%* under this notice with regards to any third party intellectual property
+%* rights that might be used for the implementation of the Software.
 %*
 %******************************************************************************
 
 %******************************************************************************
-%* Project     : IEEE 802.11p Simulation Platform 
+%* Project     : IEEE 802.11p Simulation Platform
 %* Date        : $Date$
 %* Version     : $Revision$
 %* Author      : Praharsha Sirsi
-%* Description : 
-%*               
+%* Description :
 %*
-%*               
-%*               
+%*
+%*
+%*
 %******************************************************************************
 
 %------------------------------------------------------------------------------
 % Input arguments checking
 %------------------------------------------------------------------------------
 switch(nargin)
-  case 1,
-   error('Test path is required.');
-  case 2,
-    Fid_Log_File = 1; % Standard output   
-  case 3,
-  otherwise,
-    error('ieee80211p_cfg_wr SYNTAX');
+    case 1,
+        error('Test path is required.');
+    case 2,
+        Fid_Log_File = 1; % Standard output
+    case 3,
+    otherwise,
+        error('ieee80211p_cfg_wr SYNTAX');
 end
 
 %------------------------------------------------------------------------------
@@ -88,12 +88,14 @@ TYPE    = IEEE80211P.CFG_TYPE;   % Configuration type
 %------------------------------------------------------------------------------
 % Procedure
 %------------------------------------------------------------------------------
-fprintf(Fid_Log_File,'Configuration type: %s\n', TYPE); 
+fprintf(Fid_Log_File,'Configuration type: %s\n', TYPE);
 switch TYPE
-  case 'IEEE80211P_BL'
-     IEEE80211P = ieee80211p_cfg_blcfg(IEEE80211P, Test_Path);
-  otherwise     
-     error('Unknown configration type %s', TYPE);
+    case 'IEEE80211P_BL'
+        IEEE80211P = ieee80211p_cfg_blcfg(IEEE80211P, Test_Path);
+    case 'IEEE80211P_HW'
+        IEEE80211P = ieee80211p_cfg_blcfg_HW(IEEE80211P, Test_Path);
+    otherwise
+        error('Unknown configration type %s', TYPE);
 end
 
 end

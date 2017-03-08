@@ -1,4 +1,4 @@
-function [ ] = ieee80211p_tx_datagen_wr( IEEE80211P, FidLogFile )
+function [ scenario ] = cfg_scenario( )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
@@ -68,58 +68,35 @@ function [ ] = ieee80211p_tx_datagen_wr( IEEE80211P, FidLogFile )
 %******************************************************************************
 
 %------------------------------------------------------------------------------
-% Input arguments checking
+% Define Scenarios
 %------------------------------------------------------------------------------
-switch(nargin)
-    case 1,
-        FidLogFile = 1; % Standard output
-    case 2,
-    otherwise,
-        error('ieee80211p_tx_datagen_wr SYNTAX');
-end
+%                  --Mod-----Cod.Rate-----Initial SNR ----Noise------ChE----
+Test_scenario =   {'BPSK'    '1/2'           30        'AWGN'    'Ideal'};
+
+
+%                  --Mod-----Cod.Rate-----Initial SNR----Noise-----
+AWGN_scenario     = {
+    'BPSK'     '1/2'   30   'AWGN'  'Ideal';
+    };
+
+F1_scenario     = {
+    'BPSK'     '1/2'   30   'AWGN'  'Ideal';
+    };
+
+
+P1_scenario     = {
+    'BPSK'     '1/2'   30   'AWGN'  'Ideal'; %
+    };
+
 
 %------------------------------------------------------------------------------
-% Parameters Definition
+% Select Scenarios
 %------------------------------------------------------------------------------
-ENABLED  = IEEE80211P.TX.DATAGEN.ENABLE;  % Enable
-DO_FNAME = IEEE80211P.TX.DATAGEN_FDO;     % Output file name
-TYPE     = IEEE80211P.TX.DATAGEN.TYPE;    % Block type
-SIM_DIR  = IEEE80211P.SIM.SIMDIR;         % Simulation directory
 
-%------------------------------------------------------------------------------
-% Procedure
-%------------------------------------------------------------------------------
-global DATA;
-
-if ENABLED
-    fprintf(FidLogFile,'\tData generator: (%s)\n', TYPE);
-    
-    switch TYPE
-        case 'IEEE80211P_BL'
-            data = ieee80211p_tx_bldatagen(IEEE80211P, FidLogFile);
-        case 'IEEE80211P_HW'
-            data = ieee80211p_tx_bldatagen_HW(IEEE80211P, FidLogFile);
-        otherwise
-            error('Unknown data generator type %s', TYPE);
-    end
-    
-else
-    fprintf(FidLogFile,'\tData generator: DISABLED\n');
-end
-
-%------------------------------------------------------------------------------
-% Output saving and formatting
-%------------------------------------------------------------------------------
-if ENABLED
-    if strcmp(DO_FNAME, '')
-        DATA = data;
-        fprintf(FidLogFile,'\t\tData stored in workspace\n');
-    else
-        save(strcat(SIM_DIR, filesep, DO_FNAME),'data')
-        fprintf(FidLogFile,'\t\tData saved in file: %s\n',...
-            DO_FNAME);
-    end
-end
+%scenario = Test_scenario;
+scenario =  AWGN_scenario;
+% scenario =  P1_scenario;
+%scenario =  F1_scenario;
 
 end
 

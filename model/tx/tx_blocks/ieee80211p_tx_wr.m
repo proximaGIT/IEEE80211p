@@ -1,4 +1,4 @@
-function [ ] = ieee80211p_tx_wr( IEEE80211P, FidLogFile )
+function [  ] = ieee80211p_tx_wr( IEEE80211P, FidLogFile )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken

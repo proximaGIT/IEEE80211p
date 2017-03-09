@@ -107,6 +107,8 @@ IEEE80211P.SIM.VERSION                  =   '2012'; %Just A version number, if c
 % Overall parameters
 %------------------------------------------------------------------------------
 IEEE80211P.GI_FRACTION                  =   0.25; %25% guard interval
+IEEE80211P.CONSTELLATION                =   'BPSK'; % Set the Constellation used in the System
+IEEE80211P.CODE_RATE                    =   '1/2'; % Set the Code rate
 
 %------------------------------------------------------------------------------
 % Transmitter parameters
@@ -114,20 +116,39 @@ IEEE80211P.GI_FRACTION                  =   0.25; %25% guard interval
 % Enables
 IEEE80211P.TX.ENABLE                    =   1; % TX enable
 IEEE80211P.TX.DATAGEN.ENABLE            =   1; % Enable/Disable data generation
+IEEE80211P.TX.MACFRAME.ENABLE           =   1; % Enable/Disable MAC Header generation
+IEEE80211P.TX.SIGNALFIELD.ENABLE        =   1; % Enable/Disable Signal Field Addition
+IEEE80211P.TX.PADBITS.ENABLE            =   1; % Enable/Dsiable Addition of Pad Bits
 
 % Block type
 IEEE80211P.TX.TYPE                      =   'IEEE80211P_BL';   % Transmiter type
 IEEE80211P.TX.DATAGEN.TYPE              =   'IEEE80211P_HW';   % HelloWorld Message generator
+IEEE80211P.TX.MACFRAME.TYPE             =   'IEEE80211P_CONSTANT_MAC_HEADER';   % MAC Layer Header Type 
+IEEE80211P.TX.SIGNALFIELD.TYPE          =   'IEEE80211P_NULL_SIGNAL_FIELD'; % Signal field Type
+IEEE80211P.TX.PADBITS.TYPE              =   'IEEE80211P_BL'; % Pad-Bits Type
 
 % I/O Filenames
-IEEE80211P.TX.DATAGEN_FDO               =   'datagen_tx_do';     % O: random data generator
+IEEE80211P.TX.DATAGEN_FDO               =   'datagen_tx_do';    % Filename for generated data
+IEEE80211P.TX.MACFRAME_FDI              =   'datagen_tx_do';    % Input Filename for the MAC Header generator
+IEEE80211P.TX.MACFRAME_FDO              =   'macframe_tx_do';   % Output Filename for the MAC Header generator
+IEEE80211P.TX.SIGNALFIELD_FDI           =   'macframe_tx_do';   % Input Filename for Signal Field Generator
+IEEE80211P.TX.SIGNALFIELD_FDO           =   'signalfield_tx_do'; % Output Filename for Signal Field Generator
+IEEE80211P.TX.PADBITS_FDI               =   'signalfield_tx_do'; % Input Filename for Pad-Bits
+IEEE80211P.TX.PADBITS_FDO               =   'padbits_tx_do';    % Output Filename for Pad-Bits
 
+% Datagen Additional Parameters
 IEEE80211P.TX.DATAGEN.SEED              =   0; % Random number generator seed
-IEEE80211P.TX.DATAGEN.NUM_FRAMES        =   1; %Number of Frames To be generated
+IEEE80211P.TX.DATAGEN.NUM_FRAMES        =   100; %Number of Frames To be generated
 IEEE80211P.TX.DATAGEN.MESSAGE           =   'HelloWorld';
 IEEE80211P.TX.DATAGEN.FRAME_SIZE        =   length(IEEE80211P.TX.DATAGEN.MESSAGE); %Length of each frame in bytes
 
-
+% MAC Frame Additional Parameters
+IEEE80211P.TX.MACFRAME.SRC_ADDR         =   [35 35 35 35 35 35];    % Source MAC Address, Each value represent a byte
+IEEE80211P.TX.MACFRAME.DST_ADDR         =   [66 66 66 66 66 66];    % Destination MAC Address, Each value represents a byte
+IEEE80211P.TX.MACFRAME.BSS_ADDR         =   [255 255 255 255 255 255]; % Basic Service Set ID, Each value respresents a byte
+IEEE80211P.TX.MACFRAME.FRAME_CONTROL    =   [0 8]; %Frame Control Value for the MAC Header, Hard Coded to data frames, Each value represents a byte
+IEEE80211P.TX.MACFRAME.DURATION         =   [0 0]; %Duration/ID value in MAC Header, Hard Coded to 0 for now, each value represents a byte
+IEEE80211P.TX.MACFRAME.HEADER_SIZE      =   28; %Total Number of bytes in the Header of the MAC Frame
 
 end
 

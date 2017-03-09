@@ -1,4 +1,4 @@
-function [ ] = ieee80211p_tx_bltx( IEEE80211P, FidLogFile )
+function [  ] = ieee80211p_tx_bltx( IEEE80211P, FidLogFile )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
@@ -85,7 +85,19 @@ end
 % Random Transport Stream Generator
 ieee80211p_tx_datagen_wr(IEEE80211P, FidLogFile);
 
-% fprintf(FidLogFile,'End of Tx IEEE 802.11p \n');
+% Generate MAC Data Frames
+ieee80211p_tx_MACframe_wr(IEEE80211P, FidLogFile);
+
+% Add Signal Field
+ieee80211p_tx_signalfield_wr(IEEE80211P, FidLogFile);
+
+% Add Pad bits
+ieee80211p_tx_padbits_wr(IEEE80211P, FidLogFile);
+
+% Scarambler
+ieee80211p_tx_scrambler_wr(IEEE80211P, FidLogFile);
+
+fprintf(FidLogFile,'End of Tx IEEE 802.11p \n');
 
 end
 

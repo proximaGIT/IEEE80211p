@@ -1,9 +1,9 @@
-function [  ] = test_IEEE80211p_basic( Test_Path, Work_Path, Fid_Log, Fid_Rep, Commandline_Params )
+function [  ] = ieee80211p_tx_signalfield_wr( IEEE80211P, FidLogFile )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
-%* 
-%* 
+%*
+%*
 %* Permission is hereby granted, free of charge, to any person obtaining a copy
 %* of this software and associated documentation files (the "Software"), to deal
 %* in the Software without restriction, including without limitation the rights
@@ -21,15 +21,15 @@ function [  ] = test_IEEE80211p_basic( Test_Path, Work_Path, Fid_Log, Fid_Rep, C
 %* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %* THE SOFTWARE.
-%* 
-%* This notice contains a licence of copyright only and does not grant 
-%* (implicitly or otherwise) any patent licence and no permission is given 
-%* under this notice with regards to any third party intellectual property 
-%* rights that might be used for the implementation of the Software.  
+%*
+%* This notice contains a licence of copyright only and does not grant
+%* (implicitly or otherwise) any patent licence and no permission is given
+%* under this notice with regards to any third party intellectual property
+%* rights that might be used for the implementation of the Software.
 %*
 %* Derived from:
 %* Copyright (c) 2011 AICIA, BBC, Pace, Panasonic, SIDSA
-%* 
+%*
 %* Permission is hereby granted, free of charge, to any person obtaining a copy
 %* of this software and associated documentation files (the "Software"), to deal
 %* in the Software without restriction, including without limitation the rights
@@ -47,54 +47,85 @@ function [  ] = test_IEEE80211p_basic( Test_Path, Work_Path, Fid_Log, Fid_Rep, C
 %* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %* THE SOFTWARE.
-%* 
-%* This notice contains a licence of copyright only and does not grant 
-%* (implicitly or otherwise) any patent licence and no permission is given 
-%* under this notice with regards to any third party intellectual property 
-%* rights that might be used for the implementation of the Software.  
+%*
+%* This notice contains a licence of copyright only and does not grant
+%* (implicitly or otherwise) any patent licence and no permission is given
+%* under this notice with regards to any third party intellectual property
+%* rights that might be used for the implementation of the Software.
 %*
 %******************************************************************************
 
 %******************************************************************************
-%* Project     : IEEE 802.11p Simulation Platform 
+%* Project     : IEEE 802.11p Simulation Platform
 %* Date        : $Date$
 %* Version     : $Revision$
 %* Author      : Praharsha Sirsi
-%* Description : 
-%*               
+%* Description :
 %*
-%*               
-%*               
+%*
+%*
+%*
 %******************************************************************************
 
 %------------------------------------------------------------------------------
-% Default Configuration
+% Input arguments checking
 %------------------------------------------------------------------------------
-IEEE80211P.CFG_TYPE = 'IEEE80211P_BL';       % IEEE 802.11p Model
-IEEE80211P = ieee80211p_cfg_wr(IEEE80211P, Work_Path, Fid_Log); % Default configuration
-
-%Print CSP version
-fprintf(Fid_Log, 'Version: %s\n', IEEE80211P.SIM.VERSION);
-
-%------------------------------------------------------------------------------
-% Get the standard parameters
-%------------------------------------------------------------------------------
-IEEE80211P.STD_TYPE='IEEE80211P_BL';
-
-% STD configuration
-IEEE80211P.STANDARD = ieee80211p_std_config_wr(IEEE80211P);
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%------------------------------------------------------------------------------
-% Run IEEE 802.11p Tx-Rx
-%------------------------------------------------------------------------------
-result = ieee80211p_sys(IEEE80211P,Fid_Log);
+switch(nargin)
+    case 1,
+        FidLogFile = 1; % Standard output
+    case 2,
+    otherwise,
+        error('ieee80211p_tx_signalfield_wr SYNTAX');
+end
 
 %------------------------------------------------------------------------------
-% Parse Result
+% Parameters Definition
 %------------------------------------------------------------------------------
-% parse_result(IEEE80211P,result,Fid_Rep)
+ENABLED  = IEEE80211P.TX.SIGNALFIELD.ENABLE; % Enable
+DI_FNAME = IEEE80211P.TX.SIGNALFIELD_FDI;    % Input file
+DO_FNAME = IEEE80211P.TX.SIGNALFIELD_FDO;    % Output file
+TYPE     = IEEE80211P.TX.SIGNALFIELD.TYPE;   % Block type
+SIM_DIR  = IEEE80211P.SIM.SIMDIR;    % Simulation directory
+
+%------------------------------------------------------------------------------
+% Procedure
+%------------------------------------------------------------------------------
+global DATA;
+
+if ENABLED
+    fprintf(FidLogFile,'\tIEEE80211P-TX-SIGNAL FIELD: (%s)\n', TYPE);
+    if strcmp(DI_FNAME, '')
+        data = DATA;
+    else
+        load(strcat(SIM_DIR, filesep, DI_FNAME), 'data'); % Load input data
+    end
+    
+    switch TYPE
+        case 'IEEE80211P_BL'
+            data = ieee80211p_tx_blsignalfield(IEEE80211P, FidLogFile, data);
+        case 'IEEE80211P_NULL_SIGNAL_FIELD'
+            data = ieee80211p_tx_blsignalfield_null(IEEE80211P, FidLogFile, data);
+        otherwise
+            error('Unknown Signal Field type %s', TYPE);
+    end
+    
+else % If not enabled
+    fprintf(FidLogFile,'\IEEE80211P-TX:Signal Field: DISABLED\n');
+end
+
+%------------------------------------------------------------------------------
+% Output saving and formatting
+%------------------------------------------------------------------------------
+if ENABLED
+    if strcmp(DO_FNAME, '')
+        DATA = data;
+        fprintf(FidLogFile,'\t\tSignal Field output stored in workspace\n');
+    else
+        save(strcat(SIM_DIR, filesep, DO_FNAME),'data')
+        fprintf(FidLogFile,'\t\tSignal Field output saved in file: %s\n',DO_FNAME);
+    end
+end
+
 
 end
 

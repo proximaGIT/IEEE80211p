@@ -1,4 +1,4 @@
-function [ ] = run( Test_Id, Work_Dir_Id, Log_Output, varargin )
+function [  ] = run( Test_Id, Work_Dir_Id, Log_Output, varargin )
 %*******************************************************************************
 %* Copyright (c) 2017 Telecommunications Lab, Saarland University
 %*               Campus Building C6 3, Floors 10 & 9, 66123 Saarbrücken
